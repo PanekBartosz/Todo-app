@@ -16,7 +16,7 @@ interface Todo {
   due_date: string | null;
 }
 
-type Tab = "all" | "today" | "upcoming";
+type Tab = "today" | "upcoming" | "all" | "done";
 
 export default function Todo() {
   const { user } = useAuth();
@@ -30,6 +30,7 @@ export default function Todo() {
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [editedTask, setEditedTask] = useState("");
   const [editedDate, setEditedDate] = useState("");
+  const [completingTodos, setCompletingTodos] = useState<number[]>([]);
 
   useEffect(() => {
     if (user) {
@@ -107,6 +108,11 @@ export default function Todo() {
   }
 
   async function toggleTodo(id: number, is_complete: boolean) {
+    if (!is_complete) {
+      setCompletingTodos((prev) => [...prev, id]);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setCompletingTodos((prev) => prev.filter((todoId) => todoId !== id));
+    }
     await updateTodo(id, { is_complete: !is_complete });
   }
 
@@ -146,10 +152,20 @@ export default function Todo() {
 
   const filteredTodos = todos.filter((todo) => {
     if (activeTab === "today") {
-      return todo.due_date && isToday(parseISO(todo.due_date));
+      return (
+        todo.due_date && isToday(parseISO(todo.due_date)) && !todo.is_complete
+      );
     }
     if (activeTab === "upcoming") {
-      return todo.due_date && isFuture(parseISO(todo.due_date));
+      return (
+        todo.due_date && isFuture(parseISO(todo.due_date)) && !todo.is_complete
+      );
+    }
+    if (activeTab === "done") {
+      return todo.is_complete;
+    }
+    if (activeTab === "all") {
+      return !todo.is_complete;
     }
     return true;
   });
@@ -181,16 +197,6 @@ export default function Todo() {
         {/* Tabs */}
         <div className="mb-8 flex space-x-4 border-b">
           <button
-            onClick={() => setActiveTab("all")}
-            className={`pb-4 text-sm font-medium ${
-              activeTab === "all"
-                ? "border-b-2 border-red-600 text-red-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            All Tasks
-          </button>
-          <button
             onClick={() => setActiveTab("today")}
             className={`pb-4 text-sm font-medium ${
               activeTab === "today"
@@ -209,6 +215,26 @@ export default function Todo() {
             }`}
           >
             Upcoming
+          </button>
+          <button
+            onClick={() => setActiveTab("all")}
+            className={`pb-4 text-sm font-medium ${
+              activeTab === "all"
+                ? "border-b-2 border-red-600 text-red-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            All Tasks
+          </button>
+          <button
+            onClick={() => setActiveTab("done")}
+            className={`pb-4 text-sm font-medium ${
+              activeTab === "done"
+                ? "border-b-2 border-red-600 text-red-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Done
           </button>
         </div>
 
@@ -278,12 +304,13 @@ export default function Todo() {
                     <button
                       onClick={() => toggleTodo(todo.id, todo.is_complete)}
                       className={`flex h-5 w-5 items-center justify-center rounded-full border ${
-                        todo.is_complete
+                        todo.is_complete || completingTodos.includes(todo.id)
                           ? "border-red-600 bg-red-600 text-white"
                           : "border-gray-400"
                       }`}
                     >
-                      {todo.is_complete && (
+                      {(todo.is_complete ||
+                        completingTodos.includes(todo.id)) && (
                         <svg
                           className="h-3 w-3"
                           fill="none"
@@ -302,18 +329,34 @@ export default function Todo() {
                     <div>
                       <span
                         className={`block text-gray-900 ${
-                          todo.is_complete ? "line-through opacity-50" : ""
+                          todo.is_complete || completingTodos.includes(todo.id)
+                            ? "line-through opacity-50"
+                            : ""
                         }`}
                       >
                         {todo.title}
                       </span>
                       {todo.description && (
-                        <span className="text-sm text-gray-500 block">
+                        <span
+                          className={`text-sm text-gray-500 block ${
+                            todo.is_complete ||
+                            completingTodos.includes(todo.id)
+                              ? "line-through opacity-50"
+                              : ""
+                          }`}
+                        >
                           {todo.description}
                         </span>
                       )}
                       {todo.due_date && (
-                        <span className="text-sm text-gray-500">
+                        <span
+                          className={`text-sm text-gray-500 ${
+                            todo.is_complete ||
+                            completingTodos.includes(todo.id)
+                              ? "line-through opacity-50"
+                              : ""
+                          }`}
+                        >
                           Due: {format(parseISO(todo.due_date), "MMM d, yyyy")}
                         </span>
                       )}
