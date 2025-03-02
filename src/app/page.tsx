@@ -1,101 +1,148 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect } from "react";
+import { useAuth } from "@/lib/auth-context";
+import { useSearchParams, useRouter } from "next/navigation";
+import Auth from "@/components/Auth";
+import Todo from "@/components/Todo";
+import Link from "next/link";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const { user, loading } = useAuth();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const isAuthPage = searchParams.get("auth") === "true";
+  const shouldRegister = searchParams.get("register") === "true";
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  if (loading) {
+    return <div className="text-center">Loading...</div>;
+  }
+
+  if (user) {
+    return <Todo />;
+  }
+
+  if (isAuthPage) {
+    return <Auth initialIsLogin={!shouldRegister} />;
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Navigation */}
+        <nav className="flex items-center justify-between py-6">
+          <div className="flex items-center space-x-2">
+            <svg
+              className="h-8 w-8 text-indigo-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              />
+            </svg>
+            <span className="text-xl font-bold text-gray-900">TaskFlow</span>
+          </div>
+          <button
+            onClick={() => router.push("/?auth=true")}
+            className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Log in
+          </button>
+        </nav>
+
+        {/* Hero Section */}
+        <div className="py-20 text-center">
+          <h1 className="mb-8 text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+            Organize your work and life
+          </h1>
+          <p className="mx-auto mb-12 max-w-2xl text-lg text-gray-600">
+            Become focused, organized, and calm with TaskFlow. The world's most
+            popular task management app.
+          </p>
+          <button
+            onClick={() => router.push("/?auth=true")}
+            className="rounded-lg bg-indigo-600 px-8 py-4 text-lg font-medium text-white shadow-sm hover:bg-indigo-700"
           >
-            Read our docs
-          </a>
+            START NOW
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Features */}
+        <div className="grid gap-8 py-20 md:grid-cols-3">
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <div className="mb-4 inline-block rounded-lg bg-indigo-100 p-3">
+              <svg
+                className="h-6 w-6 text-indigo-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                />
+              </svg>
+            </div>
+            <h3 className="mb-2 text-lg font-semibold">Clear your mind</h3>
+            <p className="text-gray-600">
+              The fastest way to get tasks out of your head and organized.
+            </p>
+          </div>
+
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <div className="mb-4 inline-block rounded-lg bg-indigo-100 p-3">
+              <svg
+                className="h-6 w-6 text-indigo-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <h3 className="mb-2 text-lg font-semibold">
+              Focus on what matters
+            </h3>
+            <p className="text-gray-600">
+              Stay on top of your tasks and organize your work efficiently.
+            </p>
+          </div>
+
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <div className="mb-4 inline-block rounded-lg bg-indigo-100 p-3">
+              <svg
+                className="h-6 w-6 text-indigo-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+            </div>
+            <h3 className="mb-2 text-lg font-semibold">Boost productivity</h3>
+            <p className="text-gray-600">
+              Track your progress and celebrate your achievements.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
