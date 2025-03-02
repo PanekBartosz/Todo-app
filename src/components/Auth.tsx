@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
+import Logo from "./Logo";
 
 interface AuthProps {
   initialIsLogin?: boolean;
@@ -15,6 +16,7 @@ export default function Auth({ initialIsLogin = true }: AuthProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(initialIsLogin);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -24,6 +26,7 @@ export default function Auth({ initialIsLogin = true }: AuthProps) {
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
 
     try {
       if (isLogin) {
@@ -38,10 +41,10 @@ export default function Auth({ initialIsLogin = true }: AuthProps) {
           password,
         });
         if (error) throw error;
-        alert("Please check your email to confirm registration!");
+        setError("Please check your email to confirm registration!");
       }
     } catch (error: any) {
-      alert(error.message);
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -50,6 +53,7 @@ export default function Auth({ initialIsLogin = true }: AuthProps) {
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
+      setError(null);
 
       if (isLogin) {
         const { data, error } = await supabase.auth.signInWithOAuth({
@@ -86,85 +90,150 @@ export default function Auth({ initialIsLogin = true }: AuthProps) {
         if (error) throw error;
       }
     } catch (error: any) {
-      alert(error.message);
+      setError(error.message);
     } finally {
       setLoading(false);
     }
   };
 
   if (authLoading) {
-    return <div className="text-center">Loading...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-5 w-5 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
+      </div>
+    );
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-white px-4">
-      <div className="w-full max-w-md">
-        <div className="mb-8 flex items-center justify-center space-x-2">
-          <svg
-            className="h-8 w-8 text-indigo-600"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-            />
-          </svg>
-          <span className="text-xl font-bold text-gray-900">TaskFlow</span>
-        </div>
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+      <div className="w-full max-w-md px-4 sm:px-6 lg:px-8">
+        <div className="rounded-lg bg-white p-8 shadow-sm">
+          <div className="text-center">
+            <Logo className="mx-auto h-12 w-12" />
+            <h2 className="mt-6 text-3xl font-bold tracking-tight text-gray-900">
+              {isLogin ? "Sign in" : "Sign up"}
+            </h2>
+            <p className="mt-2 text-sm text-gray-600">
+              {isLogin ? "Welcome back!" : "Start organizing your tasks today"}
+            </p>
+          </div>
 
-        <div className="rounded-xl bg-white p-8 shadow-sm">
-          <h2 className="mb-6 text-center text-2xl font-bold text-gray-900">
-            {isLogin ? "Welcome back" : "Create your account"}
-          </h2>
-
-          <form onSubmit={handleAuth} className="space-y-4">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email address
-              </label>
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                placeholder="Enter your email"
-              />
+          <form className="mt-8 space-y-6" onSubmit={handleAuth}>
+            <div className="space-y-4">
+              <div>
+                <label
+                  htmlFor="email-address"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Email address
+                </label>
+                <input
+                  id="email-address"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500 sm:text-sm"
+                  placeholder="Enter your email"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Password
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500 sm:text-sm"
+                  placeholder="Enter your password"
+                />
+              </div>
             </div>
 
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
+            {error && (
+              <div
+                className={`rounded-md p-4 ${
+                  error.includes("confirm") ? "bg-green-50" : "bg-red-50"
+                }`}
               >
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                placeholder="Enter your password"
-              />
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    {error.includes("confirm") ? (
+                      <svg
+                        className="h-5 w-5 text-green-400"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        className="h-5 w-5 text-red-400"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  <div className="ml-3">
+                    <p
+                      className={`text-sm ${
+                        error.includes("confirm")
+                          ? "text-green-700"
+                          : "text-red-700"
+                      }`}
+                    >
+                      {error}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50"
+              >
+                {loading ? (
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                ) : (
+                  <>{isLogin ? "Sign in" : "Sign up"}</>
+                )}
+              </button>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
-            >
-              {loading ? "Processing..." : isLogin ? "Sign In" : "Sign Up"}
-            </button>
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => setIsLogin(!isLogin)}
+                className="text-sm font-medium text-red-600 hover:text-red-500"
+              >
+                {isLogin
+                  ? "Don't have an account? Sign up"
+                  : "Already have an account? Sign in"}
+              </button>
+            </div>
           </form>
 
           <div className="my-6 flex items-center">
@@ -176,7 +245,7 @@ export default function Auth({ initialIsLogin = true }: AuthProps) {
           <button
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="flex w-full items-center justify-center space-x-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            className="flex w-full items-center justify-center space-x-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path
@@ -201,25 +270,14 @@ export default function Auth({ initialIsLogin = true }: AuthProps) {
             </span>
           </button>
 
-          <div className="mt-6 text-center">
+          <div className="mt-4 text-center">
             <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+              onClick={() => router.push("/")}
+              className="text-sm text-gray-600 hover:text-gray-900"
             >
-              {isLogin
-                ? "Don't have an account? Sign up"
-                : "Already have an account? Sign in"}
+              ← Back to home
             </button>
           </div>
-        </div>
-
-        <div className="mt-4 text-center">
-          <button
-            onClick={() => router.push("/")}
-            className="text-sm text-gray-600 hover:text-gray-900"
-          >
-            ← Back to home
-          </button>
         </div>
       </div>
     </div>

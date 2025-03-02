@@ -159,7 +159,7 @@ export default function Todo() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="fixed top-0 z-10 w-full border-b bg-white shadow-sm">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
@@ -184,7 +184,7 @@ export default function Todo() {
             onClick={() => setActiveTab("all")}
             className={`pb-4 text-sm font-medium ${
               activeTab === "all"
-                ? "border-b-2 border-indigo-600 text-indigo-600"
+                ? "border-b-2 border-red-600 text-red-600"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
@@ -194,7 +194,7 @@ export default function Todo() {
             onClick={() => setActiveTab("today")}
             className={`pb-4 text-sm font-medium ${
               activeTab === "today"
-                ? "border-b-2 border-indigo-600 text-indigo-600"
+                ? "border-b-2 border-red-600 text-red-600"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
@@ -204,7 +204,7 @@ export default function Todo() {
             onClick={() => setActiveTab("upcoming")}
             className={`pb-4 text-sm font-medium ${
               activeTab === "upcoming"
-                ? "border-b-2 border-indigo-600 text-indigo-600"
+                ? "border-b-2 border-red-600 text-red-600"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
@@ -220,7 +220,7 @@ export default function Todo() {
               value={newTask}
               onChange={(e) => setNewTask(e.target.value)}
               placeholder="Add a task..."
-              className="flex-1 rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="flex-1 rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
             />
             <input
               type="date"
@@ -230,7 +230,7 @@ export default function Todo() {
             />
             <button
               type="submit"
-              className="rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              className="rounded-lg bg-red-600 px-6 py-3 text-sm font-semibold text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
             >
               Add Task
             </button>
@@ -261,7 +261,7 @@ export default function Todo() {
                   />
                   <button
                     onClick={handleSaveEdit}
-                    className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                    className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
                   >
                     Save
                   </button>
@@ -279,7 +279,7 @@ export default function Todo() {
                       onClick={() => toggleTodo(todo.id, todo.is_complete)}
                       className={`flex h-5 w-5 items-center justify-center rounded-full border ${
                         todo.is_complete
-                          ? "border-indigo-600 bg-indigo-600 text-white"
+                          ? "border-red-600 bg-red-600 text-white"
                           : "border-gray-400"
                       }`}
                     >
@@ -322,7 +322,7 @@ export default function Todo() {
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => startEditing(todo)}
-                      className="text-gray-400 hover:text-indigo-600"
+                      className="text-gray-400 hover:text-red-600"
                     >
                       <svg
                         className="h-5 w-5"
@@ -340,7 +340,7 @@ export default function Todo() {
                     </button>
                     <button
                       onClick={() => deleteTodo(todo.id)}
-                      className="text-gray-400 hover:text-indigo-600"
+                      className="text-gray-400 hover:text-red-600"
                     >
                       <svg
                         className="h-5 w-5"

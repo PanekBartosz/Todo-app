@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useSearchParams, useRouter } from "next/navigation";
 import Auth from "@/components/Auth";
 import Todo from "@/components/Todo";
+import Logo from "@/components/Logo";
 import Link from "next/link";
 
 export default function Home() {
@@ -27,24 +28,12 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Navigation */}
         <nav className="flex items-center justify-between py-6">
           <div className="flex items-center space-x-2">
-            <svg
-              className="h-8 w-8 text-indigo-600"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-              />
-            </svg>
+            <Logo />
             <span className="text-xl font-bold text-gray-900">TaskFlow</span>
           </div>
           <button
@@ -66,7 +55,7 @@ export default function Home() {
           </p>
           <button
             onClick={() => router.push("/?auth=true")}
-            className="rounded-lg bg-indigo-600 px-8 py-4 text-lg font-medium text-white shadow-sm hover:bg-indigo-700"
+            className="rounded-lg bg-red-600 px-8 py-4 text-lg font-medium text-white shadow-sm hover:bg-red-700"
           >
             START NOW
           </button>
@@ -75,9 +64,9 @@ export default function Home() {
         {/* Features */}
         <div className="grid gap-8 py-20 md:grid-cols-3">
           <div className="rounded-xl bg-white p-6 shadow-sm">
-            <div className="mb-4 inline-block rounded-lg bg-indigo-100 p-3">
+            <div className="mb-4 inline-block rounded-lg bg-red-100 p-3">
               <svg
-                className="h-6 w-6 text-indigo-600"
+                className="h-6 w-6 text-red-600"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -97,9 +86,9 @@ export default function Home() {
           </div>
 
           <div className="rounded-xl bg-white p-6 shadow-sm">
-            <div className="mb-4 inline-block rounded-lg bg-indigo-100 p-3">
+            <div className="mb-4 inline-block rounded-lg bg-red-100 p-3">
               <svg
-                className="h-6 w-6 text-indigo-600"
+                className="h-6 w-6 text-red-600"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -121,9 +110,9 @@ export default function Home() {
           </div>
 
           <div className="rounded-xl bg-white p-6 shadow-sm">
-            <div className="mb-4 inline-block rounded-lg bg-indigo-100 p-3">
+            <div className="mb-4 inline-block rounded-lg bg-red-100 p-3">
               <svg
-                className="h-6 w-6 text-indigo-600"
+                className="h-6 w-6 text-red-600"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
