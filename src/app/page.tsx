@@ -2,18 +2,13 @@
 
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { useSearchParams, useRouter } from "next/navigation";
-import Auth from "@/components/Auth";
+import { useRouter } from "next/navigation";
 import Todo from "@/components/Todo";
 import Logo from "@/components/Logo";
-import Link from "next/link";
 
 export default function Home() {
   const { user, loading } = useAuth();
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const isAuthPage = searchParams.get("auth") === "true";
-  const shouldRegister = searchParams.get("register") === "true";
 
   if (loading) {
     return <div className="text-center">Loading...</div>;
@@ -21,10 +16,6 @@ export default function Home() {
 
   if (user) {
     return <Todo />;
-  }
-
-  if (isAuthPage) {
-    return <Auth initialIsLogin={!shouldRegister} />;
   }
 
   return (
@@ -37,7 +28,7 @@ export default function Home() {
             <span className="text-xl font-bold text-gray-900">TaskFlow</span>
           </div>
           <button
-            onClick={() => router.push("/?auth=true")}
+            onClick={() => router.push("/auth")}
             className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
           >
             Log in
@@ -54,7 +45,7 @@ export default function Home() {
             popular task management app.
           </p>
           <button
-            onClick={() => router.push("/?auth=true")}
+            onClick={() => router.push("/auth")}
             className="rounded-lg bg-red-600 px-8 py-4 text-lg font-medium text-white shadow-sm hover:bg-red-700"
           >
             START NOW
