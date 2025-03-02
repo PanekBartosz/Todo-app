@@ -31,6 +31,7 @@ export default function Todo() {
   const [editedTask, setEditedTask] = useState("");
   const [editedDate, setEditedDate] = useState("");
   const [completingTodos, setCompletingTodos] = useState<number[]>([]);
+  const [itemsToShow, setItemsToShow] = useState(5);
 
   useEffect(() => {
     if (user) {
@@ -170,6 +171,9 @@ export default function Todo() {
     return true;
   });
 
+  const paginatedTodos = filteredTodos.slice(0, itemsToShow);
+  const hasMoreItems = filteredTodos.length > itemsToShow;
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -201,7 +205,10 @@ export default function Todo() {
         {/* Tabs */}
         <div className="mb-8 flex border-b border-gray-200">
           <button
-            onClick={() => setActiveTab("today")}
+            onClick={() => {
+              setActiveTab("today");
+              setItemsToShow(5);
+            }}
             className={`relative min-w-[120px] border-b-2 px-8 py-4 text-sm font-medium ${
               activeTab === "today"
                 ? "border-red-600 text-red-600"
@@ -230,7 +237,10 @@ export default function Todo() {
             </span>
           </button>
           <button
-            onClick={() => setActiveTab("upcoming")}
+            onClick={() => {
+              setActiveTab("upcoming");
+              setItemsToShow(5);
+            }}
             className={`relative min-w-[120px] border-b-2 px-8 py-4 text-sm font-medium ${
               activeTab === "upcoming"
                 ? "border-red-600 text-red-600"
@@ -259,7 +269,10 @@ export default function Todo() {
             </span>
           </button>
           <button
-            onClick={() => setActiveTab("all")}
+            onClick={() => {
+              setActiveTab("all");
+              setItemsToShow(5);
+            }}
             className={`relative min-w-[120px] border-b-2 px-8 py-4 text-sm font-medium ${
               activeTab === "all"
                 ? "border-red-600 text-red-600"
@@ -276,7 +289,10 @@ export default function Todo() {
             </span>
           </button>
           <button
-            onClick={() => setActiveTab("done")}
+            onClick={() => {
+              setActiveTab("done");
+              setItemsToShow(5);
+            }}
             className={`relative min-w-[120px] border-b-2 px-8 py-4 text-sm font-medium ${
               activeTab === "done"
                 ? "border-red-600 text-red-600"
@@ -320,155 +336,170 @@ export default function Todo() {
         </form>
 
         {/* Todo list */}
-        <div className="space-y-2">
-          {filteredTodos.map((todo) => (
-            <div
-              key={todo.id}
-              className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all hover:shadow-md"
-            >
-              {editingTodo?.id === todo.id ? (
-                <div className="flex flex-1 items-center space-x-3">
-                  <input
-                    type="text"
-                    value={editedTask}
-                    onChange={(e) => setEditedTask(e.target.value)}
-                    className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-gray-900"
-                    placeholder="Task title"
-                  />
-                  <input
-                    type="date"
-                    value={editedDate.split("T")[0]}
-                    onChange={(e) => setEditedDate(e.target.value)}
-                    className="rounded-lg border border-gray-300 px-3 py-2"
-                  />
-                  <button
-                    onClick={handleSaveEdit}
-                    className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={() => setEditingTodo(null)}
-                    className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <div className="flex items-center space-x-3">
-                    <button
-                      onClick={() => toggleTodo(todo.id, todo.is_complete)}
-                      className={`flex h-5 w-5 items-center justify-center rounded-full border ${
-                        todo.is_complete || completingTodos.includes(todo.id)
-                          ? "border-red-600 bg-red-600 text-white"
-                          : "border-gray-400"
-                      }`}
-                    >
-                      {(todo.is_complete ||
-                        completingTodos.includes(todo.id)) && (
-                        <svg
-                          className="h-3 w-3"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      )}
-                    </button>
-                    <div>
-                      <span
-                        className={`block text-gray-900 ${
-                          todo.is_complete || completingTodos.includes(todo.id)
-                            ? "line-through opacity-50"
-                            : ""
-                        }`}
+        {paginatedTodos.length > 0 ? (
+          <div>
+            <div className="space-y-4 mb-6">
+              {paginatedTodos.map((todo) => (
+                <div
+                  key={todo.id}
+                  className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all hover:shadow-md"
+                >
+                  {editingTodo?.id === todo.id ? (
+                    <div className="flex flex-1 items-center space-x-3">
+                      <input
+                        type="text"
+                        value={editedTask}
+                        onChange={(e) => setEditedTask(e.target.value)}
+                        className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-gray-900"
+                        placeholder="Task title"
+                      />
+                      <input
+                        type="date"
+                        value={editedDate.split("T")[0]}
+                        onChange={(e) => setEditedDate(e.target.value)}
+                        className="rounded-lg border border-gray-300 px-3 py-2"
+                      />
+                      <button
+                        onClick={handleSaveEdit}
+                        className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
                       >
-                        {todo.title}
-                      </span>
-                      {todo.description && (
-                        <span
-                          className={`text-sm text-gray-500 block ${
-                            todo.is_complete ||
-                            completingTodos.includes(todo.id)
-                              ? "line-through opacity-50"
-                              : ""
-                          }`}
-                        >
-                          {todo.description}
-                        </span>
-                      )}
-                      {todo.due_date && (
-                        <span
-                          className={`text-sm text-gray-500 ${
-                            todo.is_complete ||
-                            completingTodos.includes(todo.id)
-                              ? "line-through opacity-50"
-                              : ""
-                          }`}
-                        >
-                          Due: {format(parseISO(todo.due_date), "MMM d, yyyy")}
-                        </span>
-                      )}
+                        Save
+                      </button>
+                      <button
+                        onClick={() => setEditingTodo(null)}
+                        className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                      >
+                        Cancel
+                      </button>
                     </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => startEditing(todo)}
-                      className="text-gray-400 hover:text-red-600"
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      onClick={() => deleteTodo(todo.id)}
-                      className="text-gray-400 hover:text-red-600"
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </>
-              )}
+                  ) : (
+                    <>
+                      <div className="flex items-center space-x-3">
+                        <button
+                          onClick={() => toggleTodo(todo.id, todo.is_complete)}
+                          className={`flex h-5 w-5 items-center justify-center rounded-full border ${
+                            todo.is_complete ||
+                            completingTodos.includes(todo.id)
+                              ? "border-red-600 bg-red-600 text-white"
+                              : "border-gray-400"
+                          }`}
+                        >
+                          {(todo.is_complete ||
+                            completingTodos.includes(todo.id)) && (
+                            <svg
+                              className="h-3 w-3"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          )}
+                        </button>
+                        <div>
+                          <span
+                            className={`block text-gray-900 ${
+                              todo.is_complete ||
+                              completingTodos.includes(todo.id)
+                                ? "line-through opacity-50"
+                                : ""
+                            }`}
+                          >
+                            {todo.title}
+                          </span>
+                          {todo.description && (
+                            <span
+                              className={`text-sm text-gray-500 block ${
+                                todo.is_complete ||
+                                completingTodos.includes(todo.id)
+                                  ? "line-through opacity-50"
+                                  : ""
+                              }`}
+                            >
+                              {todo.description}
+                            </span>
+                          )}
+                          {todo.due_date && (
+                            <span
+                              className={`text-sm text-gray-500 ${
+                                todo.is_complete ||
+                                completingTodos.includes(todo.id)
+                                  ? "line-through opacity-50"
+                                  : ""
+                              }`}
+                            >
+                              Due:{" "}
+                              {format(parseISO(todo.due_date), "MMM d, yyyy")}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => startEditing(todo)}
+                          className="text-gray-400 hover:text-red-600"
+                        >
+                          <svg
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => deleteTodo(todo.id)}
+                          className="text-gray-400 hover:text-red-600"
+                        >
+                          <svg
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
 
-          {filteredTodos.length === 0 && (
-            <div className="text-center">
-              <p className="text-gray-500">
-                No tasks yet. Add your first task!
-              </p>
-            </div>
-          )}
-        </div>
+            {/* Load more button */}
+            {hasMoreItems && (
+              <div className="flex justify-center mt-6">
+                <button
+                  onClick={() => setItemsToShow((prev) => prev + 5)}
+                  className="px-6 py-2 rounded-lg border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                >
+                  Load more...
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="text-center">
+            <p className="text-gray-500">No tasks yet. Add your first task!</p>
+          </div>
+        )}
       </main>
     </div>
   );
