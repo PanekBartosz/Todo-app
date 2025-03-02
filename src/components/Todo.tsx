@@ -195,46 +195,98 @@ export default function Todo() {
       {/* Main content */}
       <main className="mx-auto max-w-3xl px-4 pt-24 pb-16">
         {/* Tabs */}
-        <div className="mb-8 flex space-x-4 border-b">
+        <div className="mb-8 flex border-b border-gray-200">
           <button
             onClick={() => setActiveTab("today")}
-            className={`pb-4 text-sm font-medium ${
+            className={`relative min-w-[120px] border-b-2 px-8 py-4 text-sm font-medium ${
               activeTab === "today"
-                ? "border-b-2 border-red-600 text-red-600"
-                : "text-gray-500 hover:text-gray-700"
+                ? "border-red-600 text-red-600"
+                : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
             }`}
           >
-            Today
+            <span className="relative">
+              Today
+              {todos.filter(
+                (todo) =>
+                  todo.due_date &&
+                  isToday(parseISO(todo.due_date)) &&
+                  !todo.is_complete
+              ).length > 0 && (
+                <span className="ml-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-100 text-xs font-medium text-red-600">
+                  {
+                    todos.filter(
+                      (todo) =>
+                        todo.due_date &&
+                        isToday(parseISO(todo.due_date)) &&
+                        !todo.is_complete
+                    ).length
+                  }
+                </span>
+              )}
+            </span>
           </button>
           <button
             onClick={() => setActiveTab("upcoming")}
-            className={`pb-4 text-sm font-medium ${
+            className={`relative min-w-[120px] border-b-2 px-8 py-4 text-sm font-medium ${
               activeTab === "upcoming"
-                ? "border-b-2 border-red-600 text-red-600"
-                : "text-gray-500 hover:text-gray-700"
+                ? "border-red-600 text-red-600"
+                : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
             }`}
           >
-            Upcoming
+            <span className="relative">
+              Upcoming
+              {todos.filter(
+                (todo) =>
+                  todo.due_date &&
+                  isFuture(parseISO(todo.due_date)) &&
+                  !todo.is_complete
+              ).length > 0 && (
+                <span className="ml-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-100 text-xs font-medium text-red-600">
+                  {
+                    todos.filter(
+                      (todo) =>
+                        todo.due_date &&
+                        isFuture(parseISO(todo.due_date)) &&
+                        !todo.is_complete
+                    ).length
+                  }
+                </span>
+              )}
+            </span>
           </button>
           <button
             onClick={() => setActiveTab("all")}
-            className={`pb-4 text-sm font-medium ${
+            className={`relative min-w-[120px] border-b-2 px-8 py-4 text-sm font-medium ${
               activeTab === "all"
-                ? "border-b-2 border-red-600 text-red-600"
-                : "text-gray-500 hover:text-gray-700"
+                ? "border-red-600 text-red-600"
+                : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
             }`}
           >
-            All Tasks
+            <span className="relative">
+              All Tasks
+              {todos.filter((todo) => !todo.is_complete).length > 0 && (
+                <span className="ml-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-100 text-xs font-medium text-red-600">
+                  {todos.filter((todo) => !todo.is_complete).length}
+                </span>
+              )}
+            </span>
           </button>
           <button
             onClick={() => setActiveTab("done")}
-            className={`pb-4 text-sm font-medium ${
+            className={`relative min-w-[120px] border-b-2 px-8 py-4 text-sm font-medium ${
               activeTab === "done"
-                ? "border-b-2 border-red-600 text-red-600"
-                : "text-gray-500 hover:text-gray-700"
+                ? "border-red-600 text-red-600"
+                : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
             }`}
           >
-            Done
+            <span className="relative">
+              Done
+              {todos.filter((todo) => todo.is_complete).length > 0 && (
+                <span className="ml-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-100 text-xs font-medium text-red-600">
+                  {todos.filter((todo) => todo.is_complete).length}
+                </span>
+              )}
+            </span>
           </button>
         </div>
 
