@@ -28,8 +28,8 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white flex flex-col">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Navigation */}
         <nav className="flex items-center justify-between py-6">
           <div className="flex items-center space-x-2">
@@ -45,11 +45,11 @@ export default function Home() {
         </nav>
 
         {/* Hero Section */}
-        <div className="py-20 text-center">
-          <h1 className="mb-8 text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+        <div className="flex flex-col items-center justify-center py-20">
+          <h1 className="text-center mb-8 text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl max-w-4xl">
             Organize your work and life
           </h1>
-          <p className="mx-auto mb-12 max-w-2xl text-lg text-gray-600">
+          <p className="text-center mb-12 max-w-2xl text-lg text-gray-600">
             Become focused, organized, and calm with TaskFlow. The world's most
             popular task management app.
           </p>
@@ -62,8 +62,8 @@ export default function Home() {
         </div>
 
         {/* Features */}
-        <div className="grid gap-8 py-20 md:grid-cols-3">
-          <div className="rounded-xl bg-white p-6 shadow-sm">
+        <div className="grid gap-8 py-8 md:grid-cols-3 max-w-5xl mx-auto">
+          <div className="rounded-xl bg-white p-6 shadow-sm text-center">
             <div className="mb-4 inline-block rounded-lg bg-red-100 p-3">
               <svg
                 className="h-6 w-6 text-red-600"
@@ -85,7 +85,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="rounded-xl bg-white p-6 shadow-sm">
+          <div className="rounded-xl bg-white p-6 shadow-sm text-center">
             <div className="mb-4 inline-block rounded-lg bg-red-100 p-3">
               <svg
                 className="h-6 w-6 text-red-600"
@@ -109,7 +109,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="rounded-xl bg-white p-6 shadow-sm">
+          <div className="rounded-xl bg-white p-6 shadow-sm text-center">
             <div className="mb-4 inline-block rounded-lg bg-red-100 p-3">
               <svg
                 className="h-6 w-6 text-red-600"
