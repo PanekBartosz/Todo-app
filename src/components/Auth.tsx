@@ -43,8 +43,10 @@ export default function Auth({ initialIsLogin = true }: AuthProps) {
         if (error) throw error;
         setError("Please check your email to confirm registration!");
       }
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error: Error | unknown) {
+      setError(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
     } finally {
       setLoading(false);
     }
@@ -89,8 +91,10 @@ export default function Auth({ initialIsLogin = true }: AuthProps) {
 
         if (error) throw error;
       }
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error: Error | unknown) {
+      setError(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
     } finally {
       setLoading(false);
     }

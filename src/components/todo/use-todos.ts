@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 
@@ -21,25 +21,7 @@ export function useTodos() {
   const [activeTab, setActiveTab] = useState<Tab>("all");
   const [itemsToShow, setItemsToShow] = useState(5);
 
-  useEffect(() => {
-    if (user) {
-      fetchTodos();
-      const subscription = supabase
-        .channel("todos")
-        .on(
-          "postgres_changes",
-          { event: "*", schema: "public", table: "todos" },
-          fetchTodos
-        )
-        .subscribe();
-
-      return () => {
-        subscription.unsubscribe();
-      };
-    }
-  }, [user]);
-
-  async function fetchTodos() {
+  const fetchTodos = useCallback(async () => {
     try {
       if (!user) return;
 
@@ -56,7 +38,25 @@ export function useTodos() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchTodos();
+      const subscription = supabase
+        .channel("todos")
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "todos" },
+          fetchTodos
+        )
+        .subscribe();
+
+      return () => {
+        subscription.unsubscribe();
+      };
+    }
+  }, [user, fetchTodos]);
 
   async function addTodo(title: string, dueDate: string) {
     if (!title.trim() || !user) return;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import Logo from "./Logo";
@@ -33,25 +33,7 @@ export default function Todo() {
   const [completingTodos, setCompletingTodos] = useState<number[]>([]);
   const [itemsToShow, setItemsToShow] = useState(5);
 
-  useEffect(() => {
-    if (user) {
-      fetchTodos();
-      const subscription = supabase
-        .channel("todos")
-        .on(
-          "postgres_changes",
-          { event: "*", schema: "public", table: "todos" },
-          fetchTodos
-        )
-        .subscribe();
-
-      return () => {
-        subscription.unsubscribe();
-      };
-    }
-  }, [user]);
-
-  async function fetchTodos() {
+  const fetchTodos = useCallback(async () => {
     try {
       if (!user) return;
 
@@ -68,7 +50,25 @@ export default function Todo() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchTodos();
+      const subscription = supabase
+        .channel("todos")
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "todos" },
+          fetchTodos
+        )
+        .subscribe();
+
+      return () => {
+        subscription.unsubscribe();
+      };
+    }
+  }, [user, fetchTodos]);
 
   async function addTodo(e: React.FormEvent) {
     e.preventDefault();

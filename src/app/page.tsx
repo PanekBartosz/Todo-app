@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import Todo from "@/components/Todo";
@@ -41,8 +40,8 @@ export default function Home() {
             Organize your work and life
           </h1>
           <p className="text-center mb-12 max-w-2xl text-lg text-gray-600">
-            Become focused, organized, and calm with TaskFlow. The world's most
-            popular task management app.
+            Become focused, organized, and calm with TaskFlow. The world&apos;s
+            most popular task management app.
           </p>
           <button
             onClick={() => router.push("/auth")}
