@@ -57,39 +57,21 @@ export default function Auth({ initialIsLogin = true }: AuthProps) {
       setLoading(true);
       setError(null);
 
-      if (isLogin) {
-        const { data, error } = await supabase.auth.signInWithOAuth({
-          provider: "google",
-          options: {
-            redirectTo: `${window.location.origin}/auth/callback`,
-            queryParams: {
-              access_type: "offline",
-              prompt: "select_account",
-              registration: "false",
-            },
-            skipBrowserRedirect: true,
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: "offline",
+            prompt: "select_account",
           },
-        });
+        },
+      });
 
-        if (error) throw error;
+      if (error) throw error;
 
-        if (data?.url) {
-          window.location.href = data.url;
-        }
-      } else {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: "google",
-          options: {
-            redirectTo: `${window.location.origin}/auth/callback`,
-            queryParams: {
-              access_type: "offline",
-              prompt: "select_account",
-              registration: "true",
-            },
-          },
-        });
-
-        if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
       }
     } catch (error: Error | unknown) {
       setError(
